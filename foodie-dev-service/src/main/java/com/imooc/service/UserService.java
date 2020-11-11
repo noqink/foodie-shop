@@ -5,7 +5,6 @@ import com.imooc.pojo.bo.UserBO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
 public interface UserService {
 
     /**
@@ -17,4 +16,9 @@ public interface UserService {
      * 创建用户
      */
     public Users createUser(UserBO userBO);
+
+    /**
+     * 校验用户名和密码
+     */
+    public Users queryUserForLogin(String username, String password);
 }
