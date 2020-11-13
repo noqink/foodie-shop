@@ -4,11 +4,11 @@ import com.imooc.enums.YesOrNo;
 import com.imooc.pojo.Carousel;
 import com.imooc.pojo.Category;
 import com.imooc.pojo.vo.CategoryVO;
+import com.imooc.pojo.vo.SixNewItemsVO;
 import com.imooc.service.CarouselService;
 import com.imooc.service.CategoryService;
 import com.imooc.utils.IMOOCJSONResult;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +59,20 @@ public class IndexController {
         List<CategoryVO> subCats = categoryService.querySubLevelCat(rootCatId);
 
         return IMOOCJSONResult.ok(subCats);
+    }
+
+    @ApiOperation(value = "通过懒加载查询六个一级id下的商品", notes = "通过懒加载查询六个一级id下的商品", httpMethod = "GET")
+    @RequestMapping("/sixNewItems/{rootCatId}")
+    public IMOOCJSONResult sixNewItemsLazy(
+            @ApiParam(name = "rootCatId", value = "一级分类id", required = true)
+            @PathVariable Integer rootCatId){
+
+        if (rootCatId == null){
+            return IMOOCJSONResult.errorMsg("子级分类不存在");
+        }
+        List<SixNewItemsVO> itemsVOList = categoryService.querySixNewItemsLazy(rootCatId);
+
+        return IMOOCJSONResult.ok(itemsVOList);
     }
 
 }
