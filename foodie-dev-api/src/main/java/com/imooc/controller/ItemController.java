@@ -4,8 +4,10 @@ import com.imooc.pojo.Items;
 import com.imooc.pojo.ItemsImg;
 import com.imooc.pojo.ItemsParam;
 import com.imooc.pojo.ItemsSpec;
+import com.imooc.pojo.bo.ShopcartBO;
 import com.imooc.pojo.vo.CommentLevelCountsVO;
 import com.imooc.pojo.vo.ItemInfoVO;
+import com.imooc.pojo.vo.ShopcartVO;
 import com.imooc.service.ItemService;
 import com.imooc.utils.IMOOCJSONResult;
 import com.imooc.utils.PagedGridResult;
@@ -14,11 +16,10 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Api(value = "商品详情页展示", tags = {"用于商品详情页的相关接口"})
@@ -153,6 +154,23 @@ public class ItemController extends BaseController {
         PagedGridResult grid = itemService.searchPagedItemsByCatId(catId, sort, page, pageSize);
 
         return IMOOCJSONResult.ok(grid);
+    }
+
+    // 由于用户长时间未登录网站，刷新购物车中的数据（主要预防价格变动）
+    @ApiOperation(value = "刷新购物车商品数据", notes = "刷新购物车商品数据", httpMethod = "GET")
+    @GetMapping("/refresh")
+    public IMOOCJSONResult add(
+            @ApiParam(name = "itemSpecIds", value = "购物车商品id拼接的字符串", required = true)
+            @RequestParam String itemSpecIds){
+
+        if (StringUtils.isBlank(itemSpecIds)){
+            // 购物车无数据
+            return IMOOCJSONResult.ok();
+        }
+
+        List<ShopcartVO> shopcartVOList = itemService.queryShopcartByIds(itemSpecIds);
+
+        return IMOOCJSONResult.ok(shopcartVOList);
     }
 
 }

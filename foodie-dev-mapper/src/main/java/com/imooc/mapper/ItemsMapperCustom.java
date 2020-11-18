@@ -4,6 +4,7 @@ import com.imooc.my.mapper.MyMapper;
 import com.imooc.pojo.Items;
 import com.imooc.pojo.vo.ItemCommentVO;
 import com.imooc.pojo.vo.SearchItemVO;
+import com.imooc.pojo.vo.ShopcartVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -20,5 +21,7 @@ public interface ItemsMapperCustom extends MyMapper<Items> {
     public List<SearchItemVO> searchItems(@Param("paramsMap")Map<String, Object> paramsMap);
 
     public List<SearchItemVO> searchItemsByCatId(@Param("paramsMap")Map<String, Object> paramsMap);
+
+    public List<ShopcartVO> queryShopcartByIds(@Param("paramsList")List<String> ids);
 
 }

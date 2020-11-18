@@ -13,7 +13,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -82,6 +81,9 @@ public class PassportController {
         CookieUtils.setCookie(request, response,
                 "user", JsonUtils.objectToJson(userResult), true);
 
+        // TODO 生成token，存入redis会话
+        // TODO 同步购物车数据
+
         return IMOOCJSONResult.ok();
     }
 
@@ -111,6 +113,9 @@ public class PassportController {
 
         CookieUtils.setCookie(request, response,
                 "user", JsonUtils.objectToJson(userResult), true);
+
+        // TODO 生成token，存入redis会话
+        // TODO 同步购物车数据
 
         return IMOOCJSONResult.ok(userResult);
     }
