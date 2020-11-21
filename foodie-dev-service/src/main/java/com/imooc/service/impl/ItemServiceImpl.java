@@ -3,6 +3,7 @@ package com.imooc.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.imooc.enums.CommentLevel;
+import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.*;
 import com.imooc.pojo.*;
 import com.imooc.pojo.vo.CommentLevelCountsVO;
@@ -40,6 +41,12 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Items queryItemById(String itemId) {
         return itemsMapper.selectByPrimaryKey(itemId);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public ItemsSpec queryItemsSpecById(String itemsSpecId) {
+        return itemsSpecMapper.selectByPrimaryKey(itemsSpecId);
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -153,6 +160,44 @@ public class ItemServiceImpl implements ItemService {
         Collections.addAll(specIdList, ids);
 
         return itemsMapperCustom.queryShopcartByIds(specIdList);
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public String queryItemImgUrl(String itemId) {
+        ItemsImg itemsImg = new ItemsImg();
+        itemsImg.setIsMain(YesOrNo.YES.type);
+        itemsImg.setItemId(itemId);
+
+        ItemsImg img = itemsImgMapper.selectOne(itemsImg);
+        return img.getUrl();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void decreaseItemSpecStock(String specId, Integer buyCounts) {
+        // synchronized 不推荐使用，集群下无用，性能低下
+        // 锁数据库: 不推荐，导致数据库性能低下
+        // 分布式锁 zookeeper redis
+
+        // lockUtil.getLock(); -- 加锁
+
+        // 1. 查询库存
+//        int stock = 10;
+
+        // 2. 判断库存，是否能够减少到0以下
+//        if (stock - buyCounts < 0) {
+        // 提示用户库存不够
+//            10 - 3 -3 - 5 = -1
+//        }
+
+        // lockUtil.unLock(); -- 解锁
+
+
+        int result = itemsMapperCustom.decreaseItemSpecStock(specId, buyCounts);
+        if (result != 1) {
+            throw new RuntimeException("订单创建失败，原因：库存不足!");
+        }
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)

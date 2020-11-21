@@ -24,4 +24,6 @@ public interface ItemsMapperCustom extends MyMapper<Items> {
 
     public List<ShopcartVO> queryShopcartByIds(@Param("paramsList")List<String> ids);
 
+    public int decreaseItemSpecStock(@Param("specId") String specId,
+                                     @Param("buyCounts") Integer buyCounts);
 }
